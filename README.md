@@ -20,13 +20,15 @@
 ---
 
 ### 🎥 Live 3D Digital Twin & Mission Control Experience
-![Interactive Satellite Digital Twin in Deep Space](docs/img/satellite_space_01.png)
+![Interactive Satellite Digital Twin Animated Walkthrough](docs/img/frontend_demo.gif)
 
-*Figure: Real-time 3D Satellite Digital Twin ("Orbital Insertion") — scrolling flies the camera through orbital trajectory, explodes the spacecraft subsystems along flight axes, activates telemetry overlays and calibrated split-conformal bounds, and achieves \$29.54M verified fleet savings with zero in-service failures.*
+*Figure: Real-time 3D Satellite Digital Twin ("Orbital Insertion & Exploded Assembly") — scrolling flies through orbital trajectories, separates spacecraft subsystems along flight axes, streams live IoT telemetry via FastAPI SSE, activates calibrated split-conformal bounds, and achieves \$29.54M verified fleet savings.*
 
 | Satellite Bus & Telemetry HUD | Exploded Subsystem Assembly | Cost-Optimal Policy & Backtest |
 | :---: | :---: | :---: |
 | ![Satellite Twin](docs/img/satellite_space_01.png) | ![Exploded View](docs/img/satellite_space_02_exploded.png) | ![Decide with Dollars](docs/img/satellite_space_03_decide.png) |
+
+> 💡 **Judge Demonstration Tool (`demo.py`):** Run `python demo.py` to trigger an automated walkthrough with live speaking scripts for video recording, or `python demo.py --verify` to test all live FastAPI backend endpoints!
 
 ---
 
@@ -354,6 +356,18 @@ python -m venv venv
 pip install --upgrade pip
 pip install -e .
 pip install -r requirements.txt
+```
+
+### 3. Interactive Judge Demo & Walkthrough (`demo.py`)
+```bash
+# Launch interactive guided walkthrough with live narrator scripts
+python demo.py
+
+# Verify all live FastAPI backend endpoints (:8000) and model metrics
+python demo.py --verify
+
+# Generate / update animated walkthrough GIF (docs/img/frontend_demo.gif)
+python demo.py --gif
 ```
 
 ### 3. Run the Full Test Suite (48 Tests)

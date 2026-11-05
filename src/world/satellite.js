@@ -27,8 +27,8 @@ function createGoldMLITexture() {
     const w = 15 + Math.random() * 45;
     const h = 15 + Math.random() * 45;
     const brightness = Math.random();
-    ctx.fillStyle = brightness > 0.5 
-      ? `rgba(255, 215, 0, ${0.15 + brightness * 0.25})` 
+    ctx.fillStyle = brightness > 0.5
+      ? `rgba(255, 215, 0, ${0.15 + brightness * 0.25})`
       : `rgba(139, 90, 0, ${0.2 + (1 - brightness) * 0.3})`;
     ctx.beginPath();
     ctx.moveTo(x, y);
