@@ -1,0 +1,15 @@
+# Production-only dependencies for the FastAPI container.
+# Jupyter, Streamlit, MLflow, and training libraries are excluded
+# to keep the image small (~600 MB vs ~2 GB).
+
+numpy>=2.1.0
+pandas>=2.2.3
+pyarrow>=17.0.0
+
+scikit-learn>=1.5.2
+xgboost>=2.1.1
+joblib>=1.4.2
+
+fastapi>=0.115.0
+uvicorn[standard]>=0.31.0
+pydantic>=2.9.0

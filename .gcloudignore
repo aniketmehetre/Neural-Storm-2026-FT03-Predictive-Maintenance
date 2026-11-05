@@ -1,0 +1,58 @@
+# Controls what is uploaded to Cloud Build as the build context.
+# We must include models/*.joblib, data/*.json and select CMAPSSData files
+# even though .gitignore excludes them, because they are runtime artefacts.
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Jupyter
+notebooks/
+.ipynb_checkpoints/
+
+# Raw CMAPSS dataset — only FD001 inference files are needed
+CMAPSSData/*
+!CMAPSSData/test_FD001.txt
+!CMAPSSData/RUL_FD001.txt
+
+# Processed data — only metadata JSONs are needed at runtime
+data/*.parquet
+data/train_*
+data/val_*
+
+# MLflow tracking artefacts
+mlflow.db
+mlruns/
+mlartifacts/
+
+# Dev artefacts
+.pytest_cache/
+tests/
+*.log
+logs/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+.AppleDouble
+.git/
+
+# Docs
+README.md
+*.pdf
+
+# Local secrets — never bake into images
+.env
+.env.config

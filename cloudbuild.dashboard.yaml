@@ -1,0 +1,17 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'Dockerfile.dashboard'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/project-a480ceee-48d1-45a9-aca/rul/rul-dashboard:latest'
+      - '.'
+
+images:
+  - 'us-central1-docker.pkg.dev/project-a480ceee-48d1-45a9-aca/rul/rul-dashboard:latest'
+
+options:
+  machineType: 'E2_HIGHCPU_8'
+
+timeout: '1200s'

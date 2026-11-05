@@ -1,0 +1,28 @@
+{
+  "useful_sensors": [
+    "sensor_06",
+    "sensor_15",
+    "sensor_08",
+    "sensor_13",
+    "sensor_21",
+    "sensor_20",
+    "sensor_11",
+    "sensor_02",
+    "sensor_12",
+    "sensor_07",
+    "sensor_17",
+    "sensor_03",
+    "sensor_04",
+    "sensor_14",
+    "sensor_09"
+  ],
+  "constant_sensors": [
+    "sensor_01",
+    "sensor_19",
+    "sensor_18",
+    "sensor_10",
+    "sensor_16",
+    "sensor_05"
+  ],
+  "rul_clip": 125
+}

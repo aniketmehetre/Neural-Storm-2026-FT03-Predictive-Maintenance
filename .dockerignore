@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Notebooks
+notebooks/
+.ipynb_checkpoints/
+
+# Raw & processed data
+# API only needs eda_meta.json + feature_meta.json (kept by default).
+# Dashboard also needs FD001 raw + RUL files for engine analysis & live prediction.
+CMAPSSData/
+!CMAPSSData/test_FD001.txt
+!CMAPSSData/RUL_FD001.txt
+data/*.parquet
+data/train_*
+data/val_*
+
+# Dev artefacts
+mlruns/
+mlartifacts/
+.pytest_cache/
+tests/
+*.log
+logs/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+.git/
+.gitignore
+
+# Docs
+README.md
+*.pdf
