@@ -118,7 +118,7 @@ It moves beyond passive time-series charting into an **autonomous closed-loop op
 
 A major limitation of classical predictive maintenance is that machine learning models output raw scalar numbers (e.g. `RUL = 23.4 cycles`) with no bridge to physical maintenance logistics. 
 
-To solve this, we implemented an **actionable business logic layer** ([`src/agents/strategy_agent.py`](file:///c:/HACKATHONS/my-hackathon-project/src/agents/strategy_agent.py)) exposed via the FastAPI endpoint `POST /maintenance-strategy` and integrated directly into the Streamlit dashboard:
+To solve this, we implemented an **actionable business logic layer** ([`src/agents/strategy_agent.py`](src/agents/strategy_agent.py)) exposed via the FastAPI endpoint `POST /maintenance-strategy` and integrated directly into the Streamlit dashboard:
 
 ### How It Works:
 1. **Anomaly & Subsystem Mapping:** The system ingests the RUL and isolates the dominant degraded component from sensor telemetry or SHAP attributions:
@@ -145,9 +145,9 @@ To solve this, we implemented an **actionable business logic layer** ([`src/agen
 - **Domain:** Commercial turbofan engine simulation (run-to-failure).
 - **Engines:** 100 training engines (~20,631 cycles) and 100 test engines (~13,096 cycles).
 - **Fault Mode:** High-Pressure Compressor (HPC) degradation under sea-level static flight conditions.
-- **Sensors:** 21 sensors recorded. Sensors `01, 05, 10, 16, 18, 19` exhibit zero variance and are purged during Exploratory Data Analysis ([`01_eda.ipynb`](file:///c:/HACKATHONS/my-hackathon-project/notebooks/01_eda.ipynb)).
+- **Sensors:** 21 sensors recorded. Sensors `01, 05, 10, 16, 18, 19` exhibit zero variance and are purged during Exploratory Data Analysis ([`01_eda.ipynb`](notebooks/01_eda.ipynb)).
 
-### 5.2 Feature Engineering ([`src/features.py`](file:///c:/HACKATHONS/my-hackathon-project/src/features.py))
+### 5.2 Feature Engineering ([`src/features.py`](src/features.py))
 For each of the 15 informative sensors, 6 causal rolling statistics over a 30-cycle window are computed:
 $$\text{Features} = \{\text{mean}, \text{std}, \text{min}, \text{max}, \text{lag}_1, \text{trend} = (x_t - \mu_{\text{window}})\}$$
 Totaling **90 engineered features**. Because rolling windows are causal ($t \in [t - W + 1, t]$), partial windows at initial startup use `min_periods=1`, ensuring 100% mathematical parity between training notebooks and real-time API inference.
@@ -172,14 +172,14 @@ A test error of ~16.7 cycles provides airline maintenance dispatchers with an ac
 
 In addition to individual API predictions, the project features a multi-agent orchestration architecture:
 
-### 1. LangGraph Autonomous Fleet Monitoring Agent ([`src/agents/fleet_agent.py`](file:///c:/HACKATHONS/my-hackathon-project/src/agents/fleet_agent.py))
+### 1. LangGraph Autonomous Fleet Monitoring Agent ([`src/agents/fleet_agent.py`](src/agents/fleet_agent.py))
 A sequential `StateGraph` with 4 specialist nodes operating over a shared typed state (`FleetAgentState`):
 1. **Sensor Analyst Node:** Queries `get_fleet_summary()` and `get_fleet_statistics()`, performs statistical distribution triage, and assigns a fleet-wide health grade.
 2. **Diagnostic Agent Node:** Executes `explain_engine()` using SHAP TreeExplainer for all critical units ($RUL \le 30$) to identify primary mechanical fault signatures.
 3. **Priority Ranker Node:** Classifies engines into operational intervention windows (Immediate Action, Week 1, Week 2, Week 3).
 4. **Report Writer Node:** Synthesizes previous outputs into a structured executive Markdown briefing.
 
-### 2. Conversational AI Analyst ([`src/agents/chat_agent.py`](file:///c:/HACKATHONS/my-hackathon-project/src/agents/chat_agent.py))
+### 2. Conversational AI Analyst ([`src/agents/chat_agent.py`](src/agents/chat_agent.py))
 An interactive ReAct agent using OpenAI function calling (`gpt-4o-mini`) equipped with 5 tools:
 - `get_fleet_summary()`
 - `get_engine_details(engine_id)`
@@ -187,7 +187,7 @@ An interactive ReAct agent using OpenAI function calling (`gpt-4o-mini`) equippe
 - `get_fleet_statistics()`
 - `explain_engine(engine_id, top_n)`
 
-### 3. Executive PDF Generation ([`src/agents/report_pdf.py`](file:///c:/HACKATHONS/my-hackathon-project/src/agents/report_pdf.py))
+### 3. Executive PDF Generation ([`src/agents/report_pdf.py`](src/agents/report_pdf.py))
 Converts autonomous agent briefings into publication-grade PDF dossiers formatted with ReportLab, including executive KPI summary blocks, status tables, and engineer sign-off blocks.
 
 ---
@@ -457,7 +457,7 @@ Actionable business logic endpoint: maps predicted RUL to subsystem fault models
 
 ## 12. Testing & Verification
 
-The project includes an integration and unit test suite in [`tests/test_api.py`](file:///c:/HACKATHONS/my-hackathon-project/tests/test_api.py) covering the API lifecycle, model bounds, threshold alerts, data order validation, and the automated maintenance strategy engine.
+The project includes an integration and unit test suite in [`tests/test_api.py`](tests/test_api.py) covering the API lifecycle, model bounds, threshold alerts, data order validation, and the automated maintenance strategy engine.
 
 Run tests via pytest:
 ```bash
@@ -498,8 +498,8 @@ tests/test_api.py::TestMaintenanceStrategy::test_root_lists_new_endpoint PASSED 
 
 ### Multi-Stage Docker Builds
 The repository provides two separate production Docker configurations:
-1. [`Dockerfile`](file:///c:/HACKATHONS/my-hackathon-project/Dockerfile): Lean, non-root microservice container running the FastAPI backend (~180MB runtime).
-2. [`Dockerfile.dashboard`](file:///c:/HACKATHONS/my-hackathon-project/Dockerfile.dashboard): Full container for the Streamlit Dashboard and LangGraph agentic layer.
+1. [`Dockerfile`](Dockerfile): Lean, non-root microservice container running the FastAPI backend (~180MB runtime).
+2. [`Dockerfile.dashboard`](Dockerfile.dashboard): Full container for the Streamlit Dashboard and LangGraph agentic layer.
 
 ### Building & Running with Docker
 ```bash
