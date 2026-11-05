@@ -113,19 +113,23 @@ class AnomalyDetector:
         joblib.dump(bundle, ANOMALY_MODEL_PATH)
         log.info("Anomaly detection baseline trained and cached at %s", ANOMALY_MODEL_PATH)
 
-    def evaluate_sequence(self, cycle_readings: list[dict[str, Any]]) -> AnomalyResult:
+    def evaluate_sequence(self, cycle_readings: list[dict[str, Any]] | pd.DataFrame) -> AnomalyResult:
         """Evaluate a time series of sensor readings for an engine causally.
 
         Args:
-            cycle_readings: Chronologically sorted list of dicts with 'cycle' and sensor keys.
+            cycle_readings: Chronologically sorted list of dicts or DataFrame with 'cycle' and sensor keys.
 
         Returns:
             AnomalyResult with latest health index, anomaly score, and CUSUM onset status.
         """
-        if not cycle_readings:
-            raise ValueError("cycle_readings cannot be empty")
-
-        df = pd.DataFrame(cycle_readings).sort_values("cycle").reset_index(drop=True)
+        if isinstance(cycle_readings, pd.DataFrame):
+            if cycle_readings.empty:
+                raise ValueError("cycle_readings cannot be empty")
+            df = cycle_readings.sort_values("cycle").reset_index(drop=True)
+        else:
+            if not cycle_readings:
+                raise ValueError("cycle_readings cannot be empty")
+            df = pd.DataFrame(cycle_readings).sort_values("cycle").reset_index(drop=True)
         X = self.scaler.transform(df[self.sensors].values)
 
         # PCA reconstruction error
@@ -174,6 +178,49 @@ class AnomalyDetector:
             onset_cycle=onset_cycle,
             degradation_state=state,
         )
+
+    def compute_health_series(self, cycle_readings: list[dict[str, Any]] | pd.DataFrame) -> dict[str, Any]:
+        """Compute full cycle-by-cycle health index trajectory and onset cycle."""
+        if isinstance(cycle_readings, pd.DataFrame):
+            if cycle_readings.empty:
+                raise ValueError("cycle_readings cannot be empty")
+            df = cycle_readings.sort_values("cycle").reset_index(drop=True)
+        else:
+            if not cycle_readings:
+                raise ValueError("cycle_readings cannot be empty")
+            df = pd.DataFrame(cycle_readings).sort_values("cycle").reset_index(drop=True)
+
+        X = self.scaler.transform(df[self.sensors].values)
+        recon = np.mean((X - self.pca.inverse_transform(self.pca.transform(X))) ** 2, axis=1)
+        iso_scores = -self.iso.score_samples(X)
+
+        s_r = (recon - self.mu_recon) / (self.std_recon + 1e-6)
+        s_i = (iso_scores - self.mu_iso) / (self.std_iso + 1e-6)
+        anomaly_scores = np.maximum(0.0, 0.4 * s_r + 0.6 * s_i)
+        raw_health_indices = np.exp(-anomaly_scores / 3.0)
+
+        smoothed_hi: list[float] = []
+        curr_hi = 1.0
+        for h in raw_health_indices:
+            curr_hi = 0.20 * h + 0.80 * curr_hi
+            smoothed_hi.append(curr_hi)
+
+        cusum = 0.0
+        onset_cycle: int | None = None
+        cycles = [int(c) for c in df["cycle"].values]
+
+        for idx, h_val in enumerate(smoothed_hi):
+            cusum = max(0.0, cusum + (1.0 - h_val) - 0.05)
+            if cusum > 0.40 and onset_cycle is None:
+                onset_cycle = cycles[idx]
+
+        return {
+            "cycles": cycles,
+            "health_indices": [round(float(v), 4) for v in smoothed_hi],
+            "anomaly_scores": [round(float(v), 4) for v in anomaly_scores],
+            "onset_detected": onset_cycle is not None,
+            "onset_cycle": onset_cycle,
+        }
 
 
 def evaluate_anomaly_report() -> dict[str, Any]:

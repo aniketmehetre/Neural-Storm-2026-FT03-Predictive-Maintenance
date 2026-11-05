@@ -16,6 +16,9 @@ api:
 dashboard:
 	$(PYTHON) -m streamlit run src/dashboard/app.py
 
+frontend:
+	npm install && npm run dev
+
 benchmark:
 	$(PYTHON) -m src.benchmark --quick
 

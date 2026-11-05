@@ -58,3 +58,8 @@ mlartifacts/
 # Logs
 *.log
 logs/
+
+# Frontend / Node
+node_modules/
+dist/
+.vite/
