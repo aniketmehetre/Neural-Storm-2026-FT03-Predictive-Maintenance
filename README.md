@@ -3,7 +3,7 @@
 **Neural Storm 2026 Hackathon Submission**  
 **Track 01:** Future Tech (Intelligent Systems & Emerging Technology)  
 **Problem Statement:** **FT-03: Predictive Maintenance for Industry (IoT time-series, Anomaly Detection)**  
-**Team Name:** Team Neural Turbofan (`aniketmehetre`)  
+**Team Name:** void main (`aniketmehetre`)  
 **Hackathon Build Window:** November 2, 2026, 8:00 PM IST – November 4, 2026, 8:00 PM IST  
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)

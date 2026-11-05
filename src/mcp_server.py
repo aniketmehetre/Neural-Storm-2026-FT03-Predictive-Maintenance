@@ -129,3 +129,4 @@ def run_backtest_summary() -> dict[str, Any]:
 
 if __name__ == "__main__":
     mcp.run()
+

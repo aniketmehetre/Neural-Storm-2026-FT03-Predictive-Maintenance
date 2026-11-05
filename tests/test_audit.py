@@ -56,3 +56,4 @@ def test_ledger_tampering_detection(tmp_path: Path):
     valid_after, error_msg = ledger.verify_chain()
     assert not valid_after
     assert "TAMPERING DETECTED" in error_msg
+

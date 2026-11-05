@@ -62,3 +62,4 @@ All metrics verified on the official 100 test engines evaluated at their final o
 2. **Single Operating Regime & Fault Mode:** FD001 models a single operating condition (sea-level static flight) and a single failure mode (High-Pressure Compressor rotor blade wear). Subsystem sensitivity attributions represent empirical sensor correlation rather than multi-fault root cause isolation.
 3. **Operational Assumptions:** Financial dollar translations assume \$350k per catastrophic failure, \$45k per depot overhaul, and an average flight utilization rate of 2.5 cycles/day. These parameters are configurable in `config/costs.yaml`.
 4. **Airworthiness Disclaimer:** All generated maintenance orders are strictly labeled `SIMULATED` and require sign-off by a certified FAA A&P or EASA Part-66 licensed engineer.
+

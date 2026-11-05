@@ -56,3 +56,4 @@ def test_mcp_tool_execution():
     rec = recommend_maintenance(engine_id=1)
     assert "action_required" in rec
     assert "recommended_replace_by_cycle" in rec
+

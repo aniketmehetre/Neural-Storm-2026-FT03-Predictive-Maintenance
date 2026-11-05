@@ -134,3 +134,4 @@ if __name__ == "__main__":
     valid, msg = ledger.verify_chain()
     print("STATUS:", "PASS" if valid else "FAIL")
     print("DETAIL:", msg)
+
