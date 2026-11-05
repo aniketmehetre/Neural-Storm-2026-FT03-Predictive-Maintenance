@@ -23,6 +23,9 @@ from pydantic import BaseModel, Field, field_validator
 from src.features import readings_to_feature_row
 from src.uncertainty import default_calibrator
 from src.anomaly import default_anomaly_detector, AnomalyResult
+from src.stream.state import fleet_state_manager
+from src.stream.replay import replay_engine_stream
+from sse_starlette.sse import EventSourceResponse
 from src.agents.strategy_agent import (
     MaintenanceStrategyRequest,
     MaintenanceStrategyResponse,
@@ -258,6 +261,9 @@ def root() -> dict:
             "GET /health",
             "POST /predict",
             "POST /anomaly",
+            "POST /ingest",
+            "GET /fleet",
+            "GET /stream/{unit_id}",
             "POST /maintenance-strategy",
         ],
     }
@@ -419,4 +425,49 @@ def generate_maintenance_strategy(
         raise HTTPException(
             status_code=500, detail="Failed to generate maintenance strategy"
         ) from exc
+
+
+# ── Streaming & IoT Gateway Endpoints ──────────────────────────────────────────
+@app.post("/ingest", summary="Ingest Single Telemetry Cycle")
+def ingest_telemetry(reading: dict[str, Any]) -> dict[str, Any]:
+    """IoT Gateway endpoint: ingest a single operational cycle for an engine.
+
+    Performs data quality inspection, updates in-memory rolling buffer,
+    computes real-time RUL with conformal intervals, and flags anomalies in <50ms.
+    """
+    try:
+        live_state = fleet_state_manager.ingest_reading(reading)
+        return live_state.__dict__
+    except Exception as exc:
+        log.exception("Ingest failed")
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/fleet", summary="Get Live Fleet Snapshot")
+def get_fleet_snapshot() -> list[dict[str, Any]]:
+    """Return the latest telemetry and health states for all ingested engines."""
+    return fleet_state_manager.get_fleet_snapshot()
+
+
+@app.get("/stream/{unit_id}", summary="Server-Sent Events (SSE) Live Replay")
+async def stream_engine_telemetry(
+    unit_id: int,
+    delay: float = 0.2,
+    fault: str | None = None,
+    fault_cycle: int = 15,
+):
+    """Server-Sent Events (SSE) stream simulating live IoT telemetry transmission.
+
+    Replays engine cycles and streams real-time updates:
+    features -> conformal RUL -> anomaly score -> MRO status.
+    Supports fault injection: 'dropout', 'stuck', 'spike'.
+    """
+    generator = replay_engine_stream(
+        unit_id=unit_id,
+        delay_sec=delay,
+        fault_type=fault,
+        fault_cycle=fault_cycle,
+    )
+    return EventSourceResponse(generator)
+
 
