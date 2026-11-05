@@ -1,0 +1,45 @@
+{
+  "fleet_size": 100,
+  "assumptions": {
+    "unplanned_failure_cost_usd": 350000.0,
+    "planned_replacement_cost_usd": 45000.0,
+    "cost_per_wasted_cycle_usd": 150.0,
+    "average_flight_cycles_per_day": 2.5,
+    "note": "cycles_per_day is an explicit operational assumption for translating cycles to days"
+  },
+  "policies": {
+    "reactive": {
+      "name": "Reactive (Run-to-Failure)",
+      "catastrophic_failures": 100,
+      "wasted_cycles": 0.0,
+      "wasted_life_pct": 0.0,
+      "total_cost_usd": 35000000.0
+    },
+    "fixed_interval": {
+      "name": "Fixed-Interval (140 Cycles)",
+      "catastrophic_failures": 0,
+      "wasted_cycles": 6648.0,
+      "wasted_life_pct": 32.2,
+      "total_cost_usd": 5497200.0
+    },
+    "predictive": {
+      "name": "Predictive AI (Our Policy)",
+      "catastrophic_failures": 0,
+      "wasted_cycles": 6382.0,
+      "wasted_life_pct": 30.91,
+      "total_cost_usd": 5457300.0
+    }
+  },
+  "financial_impact": {
+    "savings_vs_reactive_usd": 29542700.0,
+    "savings_vs_reactive_pct": 84.4,
+    "savings_vs_fixed_interval_usd": 39900.0,
+    "savings_vs_fixed_interval_pct": 0.7,
+    "cycles_saved_vs_fixed_interval": 266.0
+  },
+  "operational_lead_time": {
+    "median_lead_time_cycles": 86.0,
+    "median_lead_time_days": 34.4,
+    "planning_horizon_weeks": 4.9
+  }
+}

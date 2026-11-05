@@ -56,3 +56,4 @@ def test_features_metadata_consistency():
             col_name = f"{s}_{stat}"
             assert col_name in feat_df.columns
             assert not feat_df[col_name].isna().any()
+

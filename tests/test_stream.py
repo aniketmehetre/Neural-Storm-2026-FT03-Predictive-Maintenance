@@ -85,3 +85,4 @@ def test_sse_stream_endpoint():
         assert first_event["unit_id"] == 1
         assert "predicted_rul" in first_event
         assert "health_index" in first_event
+

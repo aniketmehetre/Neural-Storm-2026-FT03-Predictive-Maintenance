@@ -240,3 +240,4 @@ def evaluate_anomaly_report() -> dict[str, Any]:
 
 
 default_anomaly_detector = AnomalyDetector()
+

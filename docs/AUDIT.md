@@ -85,3 +85,4 @@
    - Behavior without key: Pipeline fails immediately with an unhandled `ValueError`.
 3. **`src/agents/strategy_agent.py`:**
    - 100% offline, deterministic simulated maintenance logic. Requires no external keys.
+

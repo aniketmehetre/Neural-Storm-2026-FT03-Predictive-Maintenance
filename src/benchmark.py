@@ -231,3 +231,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     res = run_benchmark(quick=args.quick)
     print(json.dumps(res, indent=2))
+

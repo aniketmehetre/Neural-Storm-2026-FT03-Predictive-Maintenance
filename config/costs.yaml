@@ -1,0 +1,13 @@
+# Economic cost model for industrial turbofan predictive maintenance
+# All monetary figures in USD ($)
+
+unplanned_failure_cost: 350000.0   # Catastrophic in-service failure / AOG emergency overhaul
+planned_replacement_cost: 45000.0   # Scheduled preventative depot refurbishment
+cost_per_wasted_cycle: 150.0       # Forfeited residual component life per remaining cycle
+hangar_slots_per_day: 3            # Total concurrent depot maintenance bays available
+
+# Operational Assumptions (Clearly documented per rulebook)
+cycles_per_day: 2.5                # ASSUMPTION: Average commercial flight cycles per aircraft per day
+lead_time_cycles: 30               # Standard procurement and scheduling lead time window in cycles
+tau_threshold: 0.60                # Risk threshold P(failure within lead time) to trigger replacement
+
