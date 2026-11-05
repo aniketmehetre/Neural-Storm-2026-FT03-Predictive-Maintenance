@@ -25,9 +25,9 @@ let clock = null;
 export function initWorld() {
   const canvas = document.getElementById('world');
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x05070b, 0.005);
+  scene.fog = new THREE.FogExp2(0x010206, 0.001);
 
-  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 800);
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 6, 26);
 
   const isMobile = window.innerWidth < 768;
@@ -40,22 +40,22 @@ export function initWorld() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2.0));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = 1.25;
 
-  // Spacecraft illumination (Sun directional key, Earth albedo fill, Rim light)
-  const ambLight = new THREE.AmbientLight(0xffffff, 0.7);
+  // Spacecraft illumination (High-contrast space sun, Earth blue albedo, electric rim)
+  const ambLight = new THREE.AmbientLight(0x0f172a, 0.85);
   scene.add(ambLight);
 
-  const sunLight = new THREE.DirectionalLight(0xfffaed, 2.2);
-  sunLight.position.set(16, 22, 18);
+  const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
+  sunLight.position.set(20, 25, 20);
   scene.add(sunLight);
 
-  const earthAlbedo = new THREE.DirectionalLight(0x38bdf8, 0.85);
-  earthAlbedo.position.set(0, -15, 10);
+  const earthAlbedo = new THREE.DirectionalLight(0x0284c7, 1.1);
+  earthAlbedo.position.set(0, -25, 12);
   scene.add(earthAlbedo);
 
-  const rimLight = new THREE.DirectionalLight(0x3de0ff, 0.9);
-  rimLight.position.set(-18, -8, -12);
+  const rimLight = new THREE.DirectionalLight(0x3de0ff, 0.95);
+  rimLight.position.set(-22, -10, -15);
   scene.add(rimLight);
 
   // Entities

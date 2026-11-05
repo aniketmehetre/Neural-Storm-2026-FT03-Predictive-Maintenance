@@ -745,3 +745,4 @@ export class SatelliteDigitalTwin {
     });
   }
 }
+

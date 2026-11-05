@@ -1,15 +1,15 @@
 /* ── Design Tokens & Base Setup ─────────────────────────────────────── */
 :root {
-  --bg: #05070b;
-  --bg-card: rgba(11, 17, 28, 0.75);
+  --bg: #010308;
+  --bg-card: rgba(6, 11, 22, 0.82);
   --ink: #e8edf5;
-  --mut: #7d8aa0;
+  --mut: #8899b2;
   --cy: #3de0ff;
   --am: #ffb23d;
   --rd: #ff4d4d;
   --gn: #10b981;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-cyan: rgba(61, 224, 255, 0.25);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-cyan: rgba(61, 224, 255, 0.3);
   --font-main: 'Space Grotesk', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
@@ -54,7 +54,7 @@ body::-webkit-scrollbar {
   height: 100vh;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.38;
+  opacity: 0.22;
   mix-blend-mode: screen;
   transition: stroke 0.3s ease;
 }
