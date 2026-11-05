@@ -5,6 +5,7 @@
  */
 import * as THREE from 'three';
 import { animate } from 'animejs';
+import { apiClient } from '../api_client.js';
 
 export class SatelliteInteractionController {
   constructor(satellite, camera, renderer) {
@@ -76,9 +77,14 @@ export class SatelliteInteractionController {
               <li>Item 1</li>
             </ul>
           </div>
+          <div class="sat-panel-section" id="sat-agent-section" style="display:none;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:10px;">
+            <div class="sat-section-label" style="color:#10b981;">⚡ FASTAPI AI MAINTENANCE AGENT</div>
+            <div class="sat-section-text" id="sat-agent-output" style="font-family:var(--font-mono);font-size:0.7rem;line-height:1.45;color:#e8edf5;white-space:pre-wrap;"></div>
+          </div>
           <div class="sat-panel-actions">
             <button class="sat-action-btn primary" id="sat-reset-cam-btn">RESET CAMERA</button>
             <button class="sat-action-btn secondary" id="sat-toggle-inspect-btn">INSPECTION MODE: OFF</button>
+            <button class="sat-action-btn primary" id="sat-ai-strategy-btn" style="background:rgba(16,185,129,0.18);border-color:#10b981;color:#10b981;" title="Call FastAPI POST /maintenance-strategy">🤖 MRO AI STRATEGY</button>
           </div>
         </div>
       `;
@@ -103,6 +109,33 @@ export class SatelliteInteractionController {
       inspectBtn.textContent = `INSPECTION MODE: ${this.isInspectionMode ? 'ON' : 'OFF'}`;
       inspectBtn.classList.toggle('active', this.isInspectionMode);
     });
+
+    // AI Strategy execution button via FastAPI Backend
+    const strategyBtn = document.getElementById('sat-ai-strategy-btn');
+    const agentSec = document.getElementById('sat-agent-section');
+    const agentOut = document.getElementById('sat-agent-output');
+
+    if (strategyBtn) {
+      strategyBtn.addEventListener('click', async () => {
+        strategyBtn.textContent = '⏳ RUNNING AGENT...';
+        const res = await apiClient.requestMaintenanceStrategy(1, 24.5);
+        strategyBtn.textContent = '🤖 MRO AI STRATEGY';
+
+        if (res && agentSec && agentOut) {
+          agentSec.style.display = 'block';
+          const po = res.parts_order;
+          const itemsStr = po.items.map((it) => `  • [${it.part_number}] ${it.description} ($${it.unit_cost.toLocaleString()})`).join('\n');
+          agentOut.textContent =
+            `[STATUS: ${res.alert_level}] Action Window: ${res.action_window}\n` +
+            `Subsystem: ${res.primary_affected_subsystem}\n` +
+            `PO: ${po.order_id} | Priority: ${po.priority}\n` +
+            `Est. Downtime: ${res.estimated_hangar_downtime_hours} hrs | Cost: $${po.total_estimated_cost_usd.toLocaleString()}\n` +
+            `Procurement SKUs:\n${itemsStr}`;
+        } else {
+          alert('FastAPI Backend /maintenance-strategy endpoint did not respond. Check backend server.');
+        }
+      });
+    }
   }
 
   initEventListeners() {

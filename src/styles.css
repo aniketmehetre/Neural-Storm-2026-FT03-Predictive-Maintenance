@@ -126,7 +126,59 @@ body::-webkit-scrollbar {
 .top-controls {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+}
+
+.api-status-pill {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--gn);
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.06em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.api-status-pill.offline {
+  background: rgba(255, 77, 77, 0.12);
+  border-color: rgba(255, 77, 77, 0.35);
+  color: var(--rd);
+}
+
+.stream-toggle-btn {
+  background: rgba(61, 224, 255, 0.12);
+  border: 1px solid rgba(61, 224, 255, 0.35);
+  color: var(--cy);
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
+.stream-toggle-btn:hover {
+  background: rgba(61, 224, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.stream-toggle-btn.streaming {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: var(--gn);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
 }
 
 .easter-pill {
@@ -253,18 +305,14 @@ body::-webkit-scrollbar {
 /* ── Chapter Headline Area (Bottom Left) ─────────────────────────────── */
 #headline-container {
   position: absolute;
-  bottom: 110px;
+  bottom: 120px;
   left: 48px;
-  max-width: 620px;
+  max-width: 650px;
   pointer-events: auto;
-  background: rgba(4, 9, 20, 0.78);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(61, 224, 255, 0.22);
-  border-left: 3px solid var(--cy);
-  border-radius: 12px;
-  padding: 22px 28px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
 }
 
 .chapter-badge {
@@ -276,20 +324,20 @@ body::-webkit-scrollbar {
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--cy);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   text-transform: uppercase;
-  text-shadow: 0 0 12px rgba(61, 224, 255, 0.5);
+  text-shadow: 0 0 16px rgba(61, 224, 255, 0.7), 0 2px 4px rgba(0, 0, 0, 0.95);
   transition: color 0.4s ease;
 }
 
 .chapter-title {
-  font-size: clamp(1.85rem, 3.2vw, 2.85rem);
+  font-size: clamp(2.2rem, 4.2vw, 3.6rem);
   font-weight: 700;
-  line-height: 1.22;
-  letter-spacing: -0.02em;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
   color: #ffffff;
-  margin-bottom: 12px;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8), 0 0 30px rgba(61, 224, 255, 0.2);
+  margin-bottom: 14px;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 2px 6px rgba(0, 0, 0, 0.9);
   word-break: normal;
   overflow-wrap: normal;
 }
@@ -305,12 +353,12 @@ body::-webkit-scrollbar {
 }
 
 .chapter-desc {
-  font-size: 0.96rem;
-  color: #d6e5f7;
-  line-height: 1.58;
-  max-width: 540px;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-  font-weight: 450;
+  font-size: 1.05rem;
+  color: #d6e6f7;
+  line-height: 1.55;
+  max-width: 520px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 1px 3px rgba(0, 0, 0, 0.9);
+  font-weight: 400;
   letter-spacing: 0.01em;
 }
 
@@ -323,13 +371,13 @@ body::-webkit-scrollbar {
   width: 90%;
   max-width: 860px;
   pointer-events: auto;
-  background: rgba(4, 9, 20, 0.85);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(61, 224, 255, 0.22);
+  background: rgba(4, 9, 20, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 14px 24px 12px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 .scrubber-track {
@@ -499,13 +547,13 @@ body::-webkit-scrollbar {
 }
 
 .chart-card {
-  background: rgba(4, 9, 20, 0.85);
-  border: 1px solid rgba(61, 224, 255, 0.22);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(4, 9, 20, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 12px;
   padding: 20px 24px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
   margin-bottom: 16px;
   opacity: 0;
   transform: translateX(20px);

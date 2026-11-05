@@ -63,8 +63,8 @@ function createGoldMLITexture() {
 }
 
 /**
- * Creates high-efficiency multi-junction photovoltaic solar cell texture
- * with deep space indigo-black cells and fine silver collection grid lines.
+ * Creates high-efficiency aerospace solar array panel texture
+ * with refined technical greyish-slate cells and fine silver collection grid lines.
  */
 function createSolarCellTexture() {
   const canvas = document.createElement('canvas');
@@ -72,8 +72,8 @@ function createSolarCellTexture() {
   canvas.height = 512;
   const ctx = canvas.getContext('2d');
 
-  // Deep space photovoltaic semiconductor substrate
-  ctx.fillStyle = '#060c18';
+  // Aerospace structural slate-grey substrate
+  ctx.fillStyle = '#374151';
   ctx.fillRect(0, 0, 1024, 512);
 
   const cols = 8;
@@ -86,16 +86,16 @@ function createSolarCellTexture() {
       const x = c * cellW;
       const y = r * cellH;
 
-      // Anti-reflective coating gradient (subtle deep blue iridescence)
+      // Photovoltaic cell gradient: refined technical greyish-slate
       const grad = ctx.createLinearGradient(x, y, x + cellW, y + cellH);
-      grad.addColorStop(0, '#0a1630');
-      grad.addColorStop(0.5, '#071022');
-      grad.addColorStop(1, '#0c1a38');
+      grad.addColorStop(0, '#5f6f84');
+      grad.addColorStop(0.5, '#4b5b70');
+      grad.addColorStop(1, '#66778d');
       ctx.fillStyle = grad;
       ctx.fillRect(x + 2, y + 2, cellW - 4, cellH - 4);
 
-      // Fine silver collection fingers (sub-grid lines)
-      ctx.strokeStyle = 'rgba(190, 215, 245, 0.25)';
+      // Fine silver collection fingers (sub-grid lines) - bright and distinct
+      ctx.strokeStyle = 'rgba(235, 243, 255, 0.75)';
       ctx.lineWidth = 1;
       const subLines = 10;
       for (let s = 1; s < subLines; s++) {
@@ -107,8 +107,8 @@ function createSolarCellTexture() {
       }
 
       // Main silver busbars (2 horizontal current collectors)
-      ctx.strokeStyle = 'rgba(235, 245, 255, 0.75)';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
       ctx.moveTo(x + 2, y + cellH * 0.33);
       ctx.lineTo(x + cellW - 2, y + cellH * 0.33);
@@ -119,8 +119,8 @@ function createSolarCellTexture() {
   }
 
   // Inter-cell isolation channels
-  ctx.strokeStyle = '#020408';
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = '#1f2937';
+  ctx.lineWidth = 2.5;
   for (let c = 0; c <= cols; c++) {
     ctx.beginPath();
     ctx.moveTo(c * cellW, 0);
@@ -208,9 +208,14 @@ export class SatelliteDigitalTwin {
         roughness: 0.32,
       }),
       carbonComposite: new THREE.MeshStandardMaterial({
-        color: 0x1e293b,
-        metalness: 0.6,
-        roughness: 0.45,
+        color: 0x64748b, // Greyish structural aerospace alloy
+        metalness: 0.8,
+        roughness: 0.3,
+      }),
+      solarFrame: new THREE.MeshStandardMaterial({
+        color: 0x8294a8, // Distinct silver-grey titanium frame
+        metalness: 0.88,
+        roughness: 0.24,
       }),
       radiatorOSR: new THREE.MeshStandardMaterial({
         color: 0xf1f5f9,
@@ -219,10 +224,10 @@ export class SatelliteDigitalTwin {
         roughness: 0.12,
       }),
       solarCell: new THREE.MeshStandardMaterial({
-        color: 0x1a2e56,
+        color: 0x9cb0c7, // Visible aerospace greyish tone with metallic sheen
         map: this.solarTex,
-        metalness: 0.82,
-        roughness: 0.22,
+        metalness: 0.72,
+        roughness: 0.28,
       }),
       feedHornGold: new THREE.MeshStandardMaterial({
         color: 0xffaa00,
@@ -352,12 +357,12 @@ export class SatelliteDigitalTwin {
       // Solar Array Drive Mechanism (SADM) rotating yoke
       const yokeGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.6, 16);
       yokeGeo.rotateZ(Math.PI / 2);
-      const yoke = new THREE.Mesh(yokeGeo, this.materials.titanium);
+      const yoke = new THREE.Mesh(yokeGeo, this.materials.aluminium);
       yoke.position.set(sign * 1.5, 0, 0);
       wingGroup.add(yoke);
 
-      const boomGeo = new THREE.BoxGeometry(0.8, 0.1, 0.12);
-      const boom = new THREE.Mesh(boomGeo, this.materials.carbonComposite);
+      const boomGeo = new THREE.BoxGeometry(0.8, 0.12, 0.12);
+      const boom = new THREE.Mesh(boomGeo, this.materials.titanium);
       boom.position.set(sign * 1.9, 0, 0);
       wingGroup.add(boom);
 
@@ -365,28 +370,33 @@ export class SatelliteDigitalTwin {
       const panelCount = 3;
       const panelW = 2.4;
       const panelH = 1.6;
-      const panelThick = 0.05;
+      const panelThick = 0.06;
 
       for (let p = 0; p < panelCount; p++) {
         const panelGroup = new THREE.Group();
         const panelCenterDist = 2.4 + p * (panelW + 0.12);
         panelGroup.position.set(sign * panelCenterDist, 0, 0);
 
-        // Carbon composite structural support backing frame
+        // Titanium-grey structural support backing frame
         const frameGeo = new THREE.BoxGeometry(panelW, panelH, panelThick);
-        const frameMesh = new THREE.Mesh(frameGeo, this.materials.carbonComposite);
+        const frameMesh = new THREE.Mesh(frameGeo, this.materials.solarFrame);
         panelGroup.add(frameMesh);
 
+        // Raised metallic perimeter trim for distinct aerospace panel border
+        const trimGeo = new THREE.BoxGeometry(panelW + 0.04, panelH + 0.04, 0.035);
+        const trimMesh = new THREE.Mesh(trimGeo, this.materials.titanium);
+        panelGroup.add(trimMesh);
+
         // Active Photovoltaic front cell face (+Z face)
-        const cellGeo = new THREE.PlaneGeometry(panelW * 0.96, panelH * 0.94);
+        const cellGeo = new THREE.PlaneGeometry(panelW * 0.94, panelH * 0.92);
         const cellFront = new THREE.Mesh(cellGeo, this.materials.solarCell);
-        cellFront.position.set(0, 0, panelThick / 2 + 0.002);
+        cellFront.position.set(0, 0, panelThick / 2 + 0.003);
         panelGroup.add(cellFront);
 
         // Rear cell face for albedo collection
         const cellBack = new THREE.Mesh(cellGeo, this.materials.solarCell);
         cellBack.rotation.y = Math.PI;
-        cellBack.position.set(0, 0, -panelThick / 2 - 0.002);
+        cellBack.position.set(0, 0, -panelThick / 2 - 0.003);
         panelGroup.add(cellBack);
 
         // Inter-panel deployment hinges

@@ -52,6 +52,14 @@
       <span class="brand-text">SATELLITE HEALTH MONITOR <span class="brand-dim">// DIGITAL TWIN</span></span>
     </div>
     <div class="top-controls">
+      <div id="backend-status" class="api-status-pill" title="FastAPI Backend Health (:8000)">
+        <span id="backend-status-dot">🟢</span>
+        <span id="backend-status-text">FASTAPI: CONNECTED</span>
+      </div>
+      <button id="stream-toggle" class="stream-toggle-btn" title="Stream live engine telemetry from FastAPI SSE">
+        <span id="stream-icon">▶</span>
+        <span id="stream-label">LIVE IOT STREAM</span>
+      </button>
       <div id="easter-egg" class="easter-pill" title="Telemetry Insight">✨ 0 FAILURES</div>
       <button id="audio-toggle" class="audio-btn" aria-label="Toggle Sound">
         <span id="audio-icon">🔇</span>

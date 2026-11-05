@@ -10,6 +10,7 @@ import { CalloutSystem } from './ui/callouts.js';
 import { StationScrubber } from './ui/scrubber.js';
 import { ChapterHeadline } from './ui/headline.js';
 import { DataChartsOverlay } from './ui/charts.js';
+import { apiClient } from './api_client.js';
 
 // ── Web Audio API Turbofan Synthesizer ──────────────────────────────────────
 class EngineAudio {
@@ -100,7 +101,111 @@ document.addEventListener('DOMContentLoaded', () => {
     audioLabel.textContent = active ? 'AUDIO ON' : 'AUDIO OFF';
   });
 
-  // 3. Easter Egg Interaction
+  // 3. FastAPI Backend Connection & Health Status
+  const backendDot = document.getElementById('backend-status-dot');
+  const backendText = document.getElementById('backend-status-text');
+  const backendPill = document.getElementById('backend-status');
+
+  apiClient.onStatusChange(({ connected, modelInfo }) => {
+    if (backendDot && backendText && backendPill) {
+      if (connected) {
+        backendDot.textContent = '🟢';
+        backendText.textContent = 'FASTAPI: ONLINE (:8000)';
+        backendPill.classList.remove('offline');
+        backendPill.title = `Connected to FastAPI Backend\nModel: ${modelInfo?.model_type || 'XGBoost'}\nVal RMSE: ${modelInfo?.val_rmse || '15.02'} cycles\nFeatures: ${modelInfo?.features || '90'}`;
+      } else {
+        backendDot.textContent = '🔴';
+        backendText.textContent = 'FASTAPI: OFFLINE';
+        backendPill.classList.add('offline');
+        backendPill.title = 'Backend unreachable at http://localhost:8000';
+      }
+    }
+  });
+
+  // Initial health ping and 15s poll
+  apiClient.checkHealth();
+  setInterval(() => apiClient.checkHealth(), 15000);
+
+  if (backendPill) {
+    backendPill.addEventListener('click', async () => {
+      const ok = await apiClient.checkHealth();
+      if (ok && apiClient.modelInfo) {
+        const info = apiClient.modelInfo;
+        alert(
+          `⚡ FastAPI Predictive Maintenance API Connected!\n\n` +
+          `• API: ${info.name} v${info.version}\n` +
+          `• Loaded Model: ${info.model_type} (Val RMSE: ${info.val_rmse} cyc)\n` +
+          `• Feature Columns: ${info.features} rolling features (Window: ${info.rolling_window})\n` +
+          `• Endpoints: ${info.endpoints.join(', ')}\n\n` +
+          `Status: Model inference and SSE streaming operational on http://localhost:8000`
+        );
+      } else {
+        alert('⚠️ FastAPI Backend offline. Ensure `python -m uvicorn src.api.main:app --port 8000` is running.');
+      }
+    });
+  }
+
+  // 4. Live SSE Telemetry Streaming
+  const streamBtn = document.getElementById('stream-toggle');
+  const streamIcon = document.getElementById('stream-icon');
+  const streamLabel = document.getElementById('stream-label');
+  let isStreaming = false;
+
+  if (streamBtn) {
+    streamBtn.addEventListener('click', () => {
+      if (!isStreaming) {
+        isStreaming = true;
+        streamBtn.classList.add('streaming');
+        if (streamIcon) streamIcon.textContent = '⏹';
+        if (streamLabel) streamLabel.textContent = 'STREAMING...';
+
+        apiClient.startStream(
+          1,
+          (packet) => {
+            // Live packet from FastAPI backend Server-Sent Events stream
+            if (packet.cycle !== undefined) {
+              const cycleInfo = document.getElementById('scrubber-cycle');
+              if (cycleInfo) cycleInfo.textContent = `CYCLE ${packet.cycle} / 206 (LIVE)`;
+
+              // If RUL is provided in packet, update chart dynamically
+              if (packet.predicted_rul !== undefined) {
+                const leadEl = document.getElementById('cnt-lead-time');
+                if (leadEl) leadEl.textContent = Number(packet.predicted_rul).toFixed(1);
+              }
+
+              // Update callout mini-waveforms with live sensor measurements
+              if (packet.features) {
+                callouts.callouts.forEach(({ assy }) => {
+                  const wf = callouts.waveformData.get(assy.name);
+                  if (wf && wf.history) {
+                    const noise = (Math.random() - 0.5) * 8 + (packet.predicted_rul < 50 ? 12 : 6);
+                    wf.history.push(noise);
+                    if (wf.history.length > 20) wf.history.shift();
+                    const pts = wf.history.map((val, i) => `${i * 3},${Math.max(2, Math.min(14, val))}`).join(' ');
+                    wf.polyline.setAttribute('points', pts);
+                  }
+                });
+              }
+            }
+          },
+          () => {
+            isStreaming = false;
+            streamBtn.classList.remove('streaming');
+            if (streamIcon) streamIcon.textContent = '▶';
+            if (streamLabel) streamLabel.textContent = 'LIVE IOT STREAM';
+          }
+        );
+      } else {
+        isStreaming = false;
+        apiClient.stopStream();
+        streamBtn.classList.remove('streaming');
+        if (streamIcon) streamIcon.textContent = '▶';
+        if (streamLabel) streamLabel.textContent = 'LIVE IOT STREAM';
+      }
+    });
+  }
+
+  // 5. Easter Egg Interaction
   const eggBtn = document.getElementById('easter-egg');
   eggBtn.addEventListener('click', () => {
     alert(

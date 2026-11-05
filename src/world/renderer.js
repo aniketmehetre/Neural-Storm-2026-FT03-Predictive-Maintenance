@@ -42,13 +42,18 @@ export function initWorld() {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.25;
 
-  // Spacecraft illumination (High-contrast space sun, Earth blue albedo, electric rim)
-  const ambLight = new THREE.AmbientLight(0x0f172a, 0.85);
+  // Spacecraft illumination (High-contrast space sun, Earth blue albedo, electric rim, front fill)
+  const ambLight = new THREE.AmbientLight(0x2a394d, 1.15);
   scene.add(ambLight);
 
-  const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
+  const sunLight = new THREE.DirectionalLight(0xffffff, 2.6);
   sunLight.position.set(20, 25, 20);
   scene.add(sunLight);
+
+  // Front-left fill light so solar array wings and spacecraft chassis are clearly illuminated
+  const frontFillLight = new THREE.DirectionalLight(0xd4e2f2, 1.35);
+  frontFillLight.position.set(-18, 12, 22);
+  scene.add(frontFillLight);
 
   const earthAlbedo = new THREE.DirectionalLight(0x0284c7, 1.1);
   earthAlbedo.position.set(0, -25, 12);
