@@ -237,8 +237,8 @@ To satisfy aerospace auditability requirements, `src/audit.py` maintains an appe
 
 ### 1. Installation
 ```bash
-git clone https://github.com/aniketmehetre/PreventiveMotorMantainance.git
-cd my-hackathon-project
+git clone https://github.com/aniketmehetre/Neural-Storm-2026-FT03-Predictive-Maintenance.git
+cd Neural-Storm-2026-FT03-Predictive-Maintenance
 
 # Create virtual environment
 python -m venv venv
