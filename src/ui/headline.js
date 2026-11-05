@@ -25,39 +25,56 @@ export class ChapterHeadline {
       this.badgeEl.style.color = '#ff4d4d';
     }
 
-    // Split text into spans for staggered character reveal
-    const text = chapter.headline;
+    // Split text cleanly by words, then characters to prevent unnatural word breaking
+    const text = chapter.headline || '';
+    const words = text.split(' ');
     this.titleEl.innerHTML = '';
     const letters = [];
 
-    text.split('').forEach((char) => {
-      const span = document.createElement('span');
-      span.textContent = char === ' ' ? '\u00A0' : char;
-      span.style.display = 'inline-block';
-      span.style.opacity = '0';
-      span.style.transform = 'translateY(24px)';
-      this.titleEl.appendChild(span);
-      letters.push(span);
+    words.forEach((word, wIdx) => {
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'title-word';
+      wordSpan.style.display = 'inline-block';
+      wordSpan.style.whiteSpace = 'nowrap';
+
+      word.split('').forEach((char) => {
+        const charSpan = document.createElement('span');
+        charSpan.className = 'title-char';
+        charSpan.textContent = char;
+        charSpan.style.display = 'inline-block';
+        charSpan.style.opacity = '0';
+        charSpan.style.transform = 'translateY(20px)';
+        wordSpan.appendChild(charSpan);
+        letters.push(charSpan);
+      });
+
+      this.titleEl.appendChild(wordSpan);
+
+      // Normal whitespace between words so browser wraps cleanly between words
+      if (wIdx < words.length - 1) {
+        const space = document.createTextNode(' ');
+        this.titleEl.appendChild(space);
+      }
     });
 
     this.descEl.textContent = chapter.desc;
     this.descEl.style.opacity = '0';
-    this.descEl.style.transform = 'translateY(12px)';
+    this.descEl.style.transform = 'translateY(10px)';
 
-    // Anime.js v4 character reveal animation
+    // Anime.js v4 character reveal animation with refined cubic easing
     animate(letters, {
       opacity: [0, 1],
-      translateY: [24, 0],
-      delay: stagger(18),
-      duration: 450,
+      translateY: [20, 0],
+      delay: stagger(15),
+      duration: 400,
       ease: 'outExpo',
     });
 
     animate(this.descEl, {
       opacity: [0, 1],
-      translateY: [12, 0],
-      duration: 500,
-      delay: 150,
+      translateY: [10, 0],
+      duration: 450,
+      delay: 120,
       ease: 'outQuad',
     });
   }

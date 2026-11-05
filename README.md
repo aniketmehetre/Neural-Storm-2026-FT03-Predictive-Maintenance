@@ -20,9 +20,13 @@
 ---
 
 ### 🎥 Live 3D Digital Twin & Mission Control Experience
-![Engines Health Monitor 3D Digital Twin Demo](docs/img/frontend_demo.gif)
+![Interactive Satellite Digital Twin in Deep Space](docs/img/satellite_space_01.png)
 
-*Figure: Real-time 3D Turbofan Digital Twin ("The Descent") — scrolling flies the camera through stratospheric flight, explodes the mechanical assemblies along the shaft, shifts atmospheric sky shaders from day to dusk to alarm night as degradation sets in, and dawns on predictive replacement with \$29.54M verified savings.*
+*Figure: Real-time 3D Satellite Digital Twin ("Orbital Insertion") — scrolling flies the camera through orbital trajectory, explodes the spacecraft subsystems along flight axes, activates telemetry overlays and calibrated split-conformal bounds, and achieves \$29.54M verified fleet savings with zero in-service failures.*
+
+| Satellite Bus & Telemetry HUD | Exploded Subsystem Assembly | Cost-Optimal Policy & Backtest |
+| :---: | :---: | :---: |
+| ![Satellite Twin](docs/img/satellite_space_01.png) | ![Exploded View](docs/img/satellite_space_02_exploded.png) | ![Decide with Dollars](docs/img/satellite_space_03_decide.png) |
 
 ---
 
