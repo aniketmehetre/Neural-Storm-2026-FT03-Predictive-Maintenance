@@ -1,0 +1,10 @@
+{
+  "target_nominal_coverage": 0.8,
+  "conformal_quantile_margin_cycles": 22.48,
+  "calibration_engines_count": 50,
+  "evaluation_engines_count": 50,
+  "empirical_evaluation_coverage": 0.84,
+  "coverage_error": 0.04,
+  "mean_interval_width_cycles": 38.6,
+  "status": "CALIBRATED_WITHIN_BOUNDS"
+}

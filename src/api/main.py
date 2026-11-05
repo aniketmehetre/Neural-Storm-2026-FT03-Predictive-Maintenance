@@ -21,6 +21,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
 
 from src.features import readings_to_feature_row
+from src.uncertainty import default_calibrator
 from src.agents.strategy_agent import (
     MaintenanceStrategyRequest,
     MaintenanceStrategyResponse,
@@ -196,6 +197,12 @@ class PredictResponse(BaseModel):
         cycles_provided:  How many sensor readings were sent.
         window_used:      How many were actually used for feature computation.
         model_val_rmse:   Validation RMSE of the loaded model (confidence proxy).
+        rul_p10:          10th percentile RUL from split-conformal interval.
+        rul_p50:          Median RUL estimate.
+        rul_p90:          90th percentile RUL from split-conformal interval.
+        prob_fail_10:     Probability of failure within 10 cycles.
+        prob_fail_30:     Probability of failure within 30 cycles.
+        interval_method:  Uncertainty estimation methodology.
     """
 
     unit_id: int | None
@@ -204,6 +211,12 @@ class PredictResponse(BaseModel):
     cycles_provided: int
     window_used: int
     model_val_rmse: float
+    rul_p10: float | None = None
+    rul_p50: float | None = None
+    rul_p90: float | None = None
+    prob_fail_10: float | None = None
+    prob_fail_30: float | None = None
+    interval_method: str | None = None
 
 
 # ── Endpoints ───────────────────────────────────────────────────────────────
@@ -277,11 +290,17 @@ def predict(request: PredictRequest) -> PredictResponse:
     cycles_provided = len(request.readings)
     window_used = min(cycles_provided, state.window)
 
+    # Derive calibrated conformal intervals & failure probabilities
+    unc = default_calibrator.estimate(predicted_rul)
+
     log.info(
-        "unit_id=%s  cycles=%d  rul=%.1f  status=%s",
+        "unit_id=%s  cycles=%d  rul=%.1f [p10=%.1f, p90=%.1f] P(fail<=30)=%.2f status=%s",
         request.unit_id,
         cycles_provided,
         predicted_rul,
+        unc.rul_p10,
+        unc.rul_p90,
+        unc.prob_fail_30,
         _rul_status(predicted_rul),
     )
 
@@ -292,6 +311,12 @@ def predict(request: PredictRequest) -> PredictResponse:
         cycles_provided = cycles_provided,
         window_used     = window_used,
         model_val_rmse  = state.model_meta["val_metrics"]["rmse"],
+        rul_p10         = unc.rul_p10,
+        rul_p50         = unc.rul_p50,
+        rul_p90         = unc.rul_p90,
+        prob_fail_10    = unc.prob_fail_10,
+        prob_fail_30    = unc.prob_fail_30,
+        interval_method = unc.interval_method,
     )
 
 

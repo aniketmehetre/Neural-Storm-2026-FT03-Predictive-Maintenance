@@ -582,7 +582,9 @@ class SimulatedMaintenanceAgent:
             shipping_method=shipping_method,
         )
 
-        confidence_score = 94.8 if alert_level == "CRITICAL" else (91.2 if alert_level == "WARNING" else 98.5)
+        from src.uncertainty import default_calibrator
+        unc = default_calibrator.estimate(predicted_rul)
+        confidence_score = unc.confidence_score
 
         return MaintenanceStrategyResponse(
             unit_id=unit_id,
@@ -597,7 +599,7 @@ class SimulatedMaintenanceAgent:
             technician_certifications=technician_certifications,
             estimated_downtime_hours=estimated_downtime_hours,
             parts_order=parts_order,
-            agent_confidence=f"{confidence_score:.1f}% (Based on Optuna-tuned XGBoost & CMAPSS FD001 fleet trends)",
-            agent_signature=f"{self.agent_name} [VERIFIED_MRO_DISPATCH]",
+            agent_confidence=f"{confidence_score:.1f}% (Derived from 80% split-conformal calibration on held-out engines)",
+            agent_signature=f"{self.agent_name} [SIMULATED_MRO_DISPATCH]",
         )
 
