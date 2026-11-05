@@ -81,3 +81,4 @@ export class SkyDome {
     this.uniforms.uTime.value = time;
   }
 }
+

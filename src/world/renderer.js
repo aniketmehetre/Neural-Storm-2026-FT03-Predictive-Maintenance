@@ -95,3 +95,4 @@ export function initWorld() {
 
   return { scene, camera, renderer, engine, cameraRig };
 }
+

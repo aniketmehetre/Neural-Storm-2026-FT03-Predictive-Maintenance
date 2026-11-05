@@ -74,6 +74,7 @@ class EngineAudio {
 
 // ── Boot Sequence ───────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
   const loaderEl = document.getElementById('loader');
   const loaderBar = document.getElementById('loader-bar');
   const loaderStatus = document.getElementById('loader-status');
@@ -150,16 +151,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 5. Loader Dismissal Animation
-  const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('noloader') === '1' || urlParams.get('p') !== null) {
-    loaderEl.style.display = 'none';
-  } else {
+    if (loaderEl) loaderEl.style.display = 'none';
+  } else if (loaderEl && loaderBar && loaderStatus) {
     let progressStep = 0;
     const loadInterval = setInterval(() => {
       progressStep += 20;
       loaderBar.style.width = `${progressStep}%`;
 
-      if (progressStep === 60) {
+      if (progressStep === 40) {
+        loaderStatus.textContent = 'CONNECTING TO IOT TELEMETRY STREAM...';
+      } else if (progressStep === 60) {
         loaderStatus.textContent = 'CALIBRATING SPLIT-CONFORMAL BOUNDS...';
       } else if (progressStep === 80) {
         loaderStatus.textContent = 'ENGAGING 3D ATMOSPHERIC DESCENT...';
@@ -167,8 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(loadInterval);
         setTimeout(() => {
           loaderEl.classList.add('hidden');
-        }, 400);
+        }, 350);
       }
-    }, 120);
+    }, 100);
   }
 });

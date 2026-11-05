@@ -62,3 +62,4 @@
 - Heavy video textures or gigantic GLTF files (use procedural Three.js geometry for ultra-fast instant 60 FPS loading).
 - Choppy window scroll listeners (use Lenis smooth scroll conductor with frame-rate independent interpolation).
 - Cluttered card overlays that obscure the 3D turbofan asset.
+
