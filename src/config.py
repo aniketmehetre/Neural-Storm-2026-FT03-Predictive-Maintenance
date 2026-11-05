@@ -48,8 +48,7 @@ class Settings(BaseModel):
     api_port: int = Field(default=8000)
     api_host: str = Field(default="0.0.0.0")
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = {"arbitrary_types_allowed": True}
 
 
 settings = Settings()

@@ -1,0 +1,25 @@
+{
+  "FD001": {
+    "dataset": "FD001",
+    "status": "VERIFIED_OFFICIAL",
+    "sample_count": 100,
+    "metrics": {
+      "rmse": 16.74,
+      "mae": 12.33,
+      "r2": 0.8255,
+      "nasa_score": 655.02
+    },
+    "error_distribution": {
+      "early_predictions_count": 40,
+      "late_predictions_count": 60,
+      "within_2_cycles_count": 16,
+      "mean_error_cycles": 3.58,
+      "median_absolute_error_cycles": 9.67
+    },
+    "evaluation_protocol": {
+      "tested_rows": "Final observed operational cycle per test engine (100 total)",
+      "rul_capping": "Piecewise linear at 125 cycles",
+      "feature_pipeline": "Causal rolling statistics (30-cycle window)"
+    }
+  }
+}
