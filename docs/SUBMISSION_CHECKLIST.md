@@ -2,7 +2,7 @@
 
 **Track 01:** Future Tech  
 **Problem Statement:** FT-03: Predictive Maintenance for Industry  
-**Team Name:** Team Neural Turbofan (`aniketmehetre`)  
+**Team Name:** void main (`aniketmehetre`)  
 **Date:** 2026-11-05  
 **Branch:** `winning-upgrade`  
 
