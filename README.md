@@ -7,6 +7,8 @@
 **Hackathon Build Window:** November 2, 2026, 8:00 PM IST – November 4, 2026, 8:00 PM IST  
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Vite + Three.js](https://img.shields.io/badge/Vite-Three.js_3D-646CFF.svg)](https://threejs.org/)
+[![Anime.js v4](https://img.shields.io/badge/Anime.js-v4.5-FF4B4B.svg)](https://animejs.com/)
 [![Track: Future Tech](https://img.shields.io/badge/Neural_Storm_2026-Track_01:_FT--03-orange.svg)](#)
 [![XGBoost](https://img.shields.io/badge/XGBoost-RUL_Regression-337AB7.svg)](https://xgboost.readthedocs.io/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-REST_+_SSE-009688.svg)](https://fastapi.tiangolo.com/)
@@ -17,11 +19,98 @@
 
 ---
 
+### 🎥 Live 3D Digital Twin & Mission Control Experience
+![Engines Health Monitor 3D Digital Twin Demo](docs/img/frontend_demo.gif)
+
+*Figure: Real-time 3D Turbofan Digital Twin ("The Descent") — scrolling flies the camera through stratospheric flight, explodes the mechanical assemblies along the shaft, shifts atmospheric sky shaders from day to dusk to alarm night as degradation sets in, and dawns on predictive replacement with \$29.54M verified savings.*
+
+---
+
 ## 📖 Table of Contents
 
 1. [The 3-Minute Judge Pitch](#1-the-3-minute-judge-pitch)
 2. [Problem Statement & Approach](#2-problem-statement--approach)
-3. [Target System Architecture](#3-target-system-architecture)
+3. [3D Digital Twin Frontend Experience ("The Descent")](#3-3d-digital-twin-frontend-experience-the-descent)
+4. [Target System Architecture](#4-target-system-architecture)
+5. [Empirical Results & Verified Metrics](#5-empirical-results--verified-metrics)
+   - [5.1 Multi-Metric Benchmark (FD001 Official Test Set)](#51-multi-metric-benchmark-fd001-official-test-set)
+   - [5.2 Calibrated Split-Conformal Uncertainty](#52-calibrated-split-conformal-uncertainty)
+   - [5.3 Anomaly & Degradation Onset Detection](#53-anomaly--degradation-onset-detection)
+   - [5.4 3-Policy Fleet Money Backtest](#54-3-policy-fleet-money-backtest)
+6. [Actionable Business Logic & Hangar Optimization](#6-actionable-business-logic--hangar-optimization)
+7. [Agentic AI Layer v2 (LangGraph with Critic & Human Approval)](#7-agentic-ai-layer-v2-langgraph-with-critic--human-approval)
+8. [Model Context Protocol (MCP) Server](#8-model-context-protocol-mcp-server)
+9. [Cryptographic Audit Ledger](#9-cryptographic-audit-ledger)
+10. [Tech Stack](#10-tech-stack)
+11. [Setup & Quick Start (Zero API Key Offline Execution)](#11-setup--quick-start-zero-api-key-offline-execution)
+12. [API & Streaming Reference](#12-api--streaming-reference)
+13. [Built During the Hackathon Window](#13-built-during-the-hackathon-window)
+14. [Honest Limitations](#14-honest-limitations)
+15. [Hackathon Compliance & AI Tools Disclosure](#15-hackathon-compliance--ai-tools-disclosure)
+16. [Credits & Acknowledgements](#16-credits--acknowledgements)
+
+---
+
+## 1. The 3-Minute Judge Pitch
+
+1. **The Problem:** Reactive maintenance risks \$350k catastrophic in-service failures and AOG (Aircraft On Ground) groundings. Calendar-based fixed replacement wastes 32%+ of residual engine life.
+2. **Detect Early:** Our unsupervised health-index detector (PCA + IsolationForest with CUSUM change-point tracking) flags degradation onset with a **median lead time of 164.5 cycles (~65 operating days) to failure**, alerting operators before RUL crosses 80 cycles in **98.9%** of cases.
+3. **Calibrated Forecasts:** Rather than fragile point predictions, our system delivers finite-sample **80% split-conformal intervals** ($p_{10}$ to $p_{90}$, empirically validated at **84.0% coverage** on held-out engines) and derives mission-horizon failure probabilities $P(\text{failure within 30 cycles})$.
+4. **Decide with Dollars:** A cost-optimal replacement policy and an **OR-Tools CP-SAT depot scheduler** optimize hangar slot allocations under capacity constraints. In our 100-engine fleet backtest, the predictive policy achieved **zero in-service failures and saved \$29,542,700 (84.4%)** over reactive maintenance.
+5. **Act Safely:** A 7-node LangGraph agent with a **deterministic numeric critic** checks all claims against state, requires **human approval** before releasing simulated purchase orders, and records every action in a **SHA-256 hash-chained tamper-evident audit ledger**.
+6. **Next-Gen 3D Digital Twin:** Built with **Three.js, Anime.js v4, and Lenis**, a cardless 3D digital twin renders procedural cutaway turbofan assemblies with real-time screen-projected callouts, procedural turbofan sound synthesis, and an atmospheric sky shader that visually reflects engine health.
+7. **Plug in Anywhere:** The entire suite operates locally offline with zero API keys and exposes tools over both **FastAPI (REST + SSE)** and the **Model Context Protocol (MCP)**.
+
+---
+
+## 2. Problem Statement & Approach
+
+### Problem Statement: FT-03 Predictive Maintenance for Industry
+Turbofan engines operate under extreme thermal and mechanical stresses. Industrial operators need solutions that can process high-frequency multi-sensor IoT telemetry, isolate anomalous degradation trajectories early, provide mathematically trustworthy time-to-failure forecasts, and automatically schedule depot overhauls before in-service failure.
+
+### Our Approach
+Built on the **NASA CMAPSS FD001 dataset** (100 training engines, 100 test engines), our system bridges statistical time-series forecasting directly to enterprise maintenance logistics:
+
+```mermaid
+flowchart TD
+    A["NASA CMAPSS IoT Telemetry (15 Sensors)"] --> B["Data Quality Guard (Trust Score)"]
+    B --> C["Causal Feature Engine (90 Rolling Stats, Window=30)"]
+    C --> D1["Anomaly Engine (PCA + IsolationForest)"]
+    C --> D2["RUL Engine (Optuna-Tuned XGBoost)"]
+    D1 --> E1["Health Index & CUSUM Onset Detector"]
+    D2 --> E2["Split-Conformal Calibration (p10, p50, p90, P(fail<=30))"]
+    E1 & E2 --> F["Cost-Optimal Policy & OR-Tools Hangar Scheduler"]
+    F --> G["LangGraph Multi-Agent v2 (Triage -> Diagnostic -> Planner -> Critic -> Approval -> Dispatch)"]
+    G --> H1["3D Digital Twin Frontend (Three.js + Anime.js v4)"]
+    G --> H2["FastAPI REST & SSE Replay Streamer"]
+    G --> H3["FastMCP Server (fleet://summary)"]
+    G --> H4["Cryptographic Audit Ledger (SHA-256 Chain)"]
+```
+
+---
+
+## 3. 3D Digital Twin Frontend Experience ("The Descent")
+
+The frontend eliminates generic boxed card layouts in favor of an **Atmos-style continuous 3D coordinate space** and an **Anime.js v4 geometric Figure Layer**:
+
+| Chapter | Journey Milestone | Mechanical 3D State | Atmospheric Sky Shader | Visual Evidence |
+| :--- | :--- | :--- | :--- | :--- |
+| **01. Boarding** (`p=0.00-0.10`) | Stratospheric cruise | Whole turbofan on wing; nominal idle rotation | Clear day cyan ($uHealth=1.0$) | ![Boarding](docs/img/frontend_01_boarding.png) |
+| **02. Anatomy** (`p=0.25-0.50`) | Mechanical deconstruction | Engine explodes along shaft into 6 cutaways (FAN, LPC, HPC, COMB, HPT, LPT) | Day to early dusk | ![Anatomy](docs/img/frontend_02_anatomy.png) |
+| **03. Detect Early** (`p=0.50-0.65`) | Degradation onset | HPC thermal tinting; CUSUM onset marker at 164.5 cycles lead time | Amber twilight ($uHealth=0.6$) | ![Detect Early](docs/img/frontend_03_detect_early.png) |
+| **04. Decide with Dollars** (`p=0.78-0.90`) | Financial optimization | High thermal stress; \$29.54M savings & \$35M vs \$5.5M comparative bars | Emergency red night ($uHealth=0.2$) | ![Decide](docs/img/frontend_04_decide_dollars.png) |
+| **05. Dawn** (`p=0.90-1.00`) | Operational restoration | Replaced engine fitted; 7-node multi-agent pipeline & SHA-256 ledger verified | Cerulean dawn ($uHealth=1.0$) | ![Dawn](docs/img/frontend_05_dawn.png) |
+
+### Key Frontend Capabilities
+1. **Cardless 3D-Anchored Callouts ([`src/ui/callouts.js`](src/ui/callouts.js)):** Pinned to assembly 3D world anchors with screen-space camera matrix projection (`translate3d`), rendering live mini-telemetry waveforms without DOM jitter.
+2. **Station Scrubber ([`src/ui/scrubber.js`](src/ui/scrubber.js)):** Slim interactive HUD along the bottom with 1-click seeking to any turbofan station (`FAN`, `LPC`, `HPC`, `COMB`, `HPT`, `LPT`).
+3. **Kinetic Text Splitting ([`src/ui/headline.js`](src/ui/headline.js)):** Typography split into individual characters and staggered with anime.js v4 easing on chapter transitions.
+4. **Web Audio API Engine Hum Synthesizer ([`src/main.js`](src/main.js)):** Procedural audio synthesis generating low-frequency spool hum and harmonic bypass whine dynamically modulated by scroll velocity (zero external audio files).
+5. **Boarding Pass Loader:** Aviation-style procedural loading overlay with hardware capability detection and reduced-motion support.
+
+---
+
+## 4. Target System Architecture
 4. [Empirical Results & Verified Metrics](#4-empirical-results--verified-metrics)
    - [4.1 Multi-Metric Benchmark (FD001 Official Test Set)](#41-multi-metric-benchmark-fd001-official-test-set)
    - [4.2 Calibrated Split-Conformal Uncertainty](#42-calibrated-split-conformal-uncertainty)
@@ -218,13 +307,14 @@ To satisfy aerospace auditability requirements, `src/audit.py` maintains an appe
 
 | Component | Technology | Purpose |
 |---|---|---|
-| **Language** | Python 3.11 / 3.12 | Core programming environment |
+| **Frontend 3D** | `Three.js`, `anime.js` (v4), `Lenis`, `Vite` | Persistent 3D digital twin, Atmos scroll, kinetic Figure layer |
+| **Language** | Python 3.11 / 3.12, Node.js 20+ | Backend ML & modern frontend build |
 | **ML & Uncertainty** | `XGBoost`, `scikit-learn`, `scipy` | RUL regression, split-conformal calibration |
 | **Anomaly Detection** | `PCA`, `IsolationForest`, CUSUM | Healthy baseline modeling and onset tracking |
 | **Optimization** | `ortools` (CP-SAT) | Constrained hangar bay scheduling |
 | **Agentic AI** | `LangGraph`, `pydantic` v2 | Stateful multi-agent graph with critic |
 | **Protocol & API** | `FastAPI`, `sse-starlette`, `mcp` (FastMCP) | REST endpoints, SSE telemetry streaming, MCP server |
-| **Testing & CI** | `pytest`, `httpx`, GitHub Actions | 37 automated tests, regression smoke tests |
+| **Testing & CI** | `pytest`, `httpx`, GitHub Actions | 48 automated tests, regression smoke tests |
 | **Containerization** | `Docker`, `docker-compose` | Reproducible deployment images |
 
 ---
@@ -233,9 +323,20 @@ To satisfy aerospace auditability requirements, `src/audit.py` maintains an appe
 
 ### Prerequisites
 - Python 3.11 or 3.12
+- Node.js 20+ (for 3D digital twin frontend)
 - Git
 
-### 1. Installation
+### 1. Launch the 3D Digital Twin Frontend ("The Descent")
+```bash
+# Install frontend dependencies
+npm install
+
+# Start local dev server
+npm run dev
+```
+Open **`http://localhost:5173`** in your browser to experience the 3D turbofan digital twin, atmospheric health transitions, and interactive audio synthesizer.
+
+### 2. Python Environment & Dependencies Installation
 ```bash
 git clone https://github.com/aniketmehetre/Neural-Storm-2026-FT03-Predictive-Maintenance.git
 cd Neural-Storm-2026-FT03-Predictive-Maintenance
@@ -251,25 +352,30 @@ pip install -e .
 pip install -r requirements.txt
 ```
 
-### 2. Run the Full Test Suite (37 Tests)
+### 3. Run the Full Test Suite (48 Tests)
 ```bash
 pytest -v
 ```
 
-### 3. Run Benchmark and Backtest
+### 4. Run Benchmark and Backtest
 ```bash
 python -m src.benchmark --quick
 python -m src.decision.backtest
 python -m src.audit --verify
 ```
 
-### 4. Start the FastAPI Service (REST + SSE)
+### 5. Start the FastAPI Service (REST + SSE)
 ```bash
 uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 Interactive Swagger API docs: `http://localhost:8000/docs`.
 
-### 5. Start the FastMCP Server
+### 6. Start the Mission Control Dashboard (Streamlit)
+```bash
+streamlit run src/dashboard/app.py
+```
+
+### 7. Start the FastMCP Server
 ```bash
 python -m src.mcp_server
 ```
