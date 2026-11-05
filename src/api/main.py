@@ -22,6 +22,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from src.features import readings_to_feature_row
 from src.uncertainty import default_calibrator
+from src.anomaly import default_anomaly_detector, AnomalyResult
 from src.agents.strategy_agent import (
     MaintenanceStrategyRequest,
     MaintenanceStrategyResponse,
@@ -219,6 +220,26 @@ class PredictResponse(BaseModel):
     interval_method: str | None = None
 
 
+class AnomalyResponse(BaseModel):
+    """Anomaly detection and degradation onset tracking response.
+
+    Attributes:
+        unit_id:           Engine identifier.
+        health_index:      Normalized health index in [0, 1] (1.0 = healthy).
+        anomaly_score:     Combined PCA and IsolationForest anomaly metric.
+        onset_detected:    Whether CUSUM change-point tracking flagged degradation onset.
+        onset_cycle:       Cycle number when onset was first detected.
+        degradation_state: Operational state (HEALTHY_BASELINE, DEGRADATION_ONSET, SEVERE_ANOMALY).
+    """
+
+    unit_id: int | None
+    health_index: float
+    anomaly_score: float
+    onset_detected: bool
+    onset_cycle: int | None
+    degradation_state: str
+
+
 # ── Endpoints ───────────────────────────────────────────────────────────────
 @app.get("/", summary="API info")
 def root() -> dict:
@@ -236,6 +257,7 @@ def root() -> dict:
         "endpoints"     : [
             "GET /health",
             "POST /predict",
+            "POST /anomaly",
             "POST /maintenance-strategy",
         ],
     }
@@ -318,6 +340,37 @@ def predict(request: PredictRequest) -> PredictResponse:
         prob_fail_30    = unc.prob_fail_30,
         interval_method = unc.interval_method,
     )
+
+
+@app.post("/anomaly", response_model=AnomalyResponse, summary="Detect Anomaly & Degradation Onset")
+def detect_anomaly(request: PredictRequest) -> AnomalyResponse:
+    """Analyze telemetry time series to detect anomalies and degradation onset.
+
+    Computes PCA reconstruction error and IsolationForest anomaly score,
+    fuses them into a smoothed [0, 1] Health Index, and triggers CUSUM
+    change-point detection for degradation onset.
+
+    Args:
+        request: Target engine ID and ordered sensor readings.
+
+    Returns:
+        AnomalyResponse containing health index, anomaly score, onset cycle, and state.
+    """
+    readings_dicts = [r.model_dump() for r in request.readings]
+    try:
+        res = default_anomaly_detector.evaluate_sequence(readings_dicts)
+        return AnomalyResponse(
+            unit_id=request.unit_id,
+            health_index=res.health_index,
+            anomaly_score=res.anomaly_score,
+            onset_detected=res.onset_detected,
+            onset_cycle=res.onset_cycle,
+            degradation_state=res.degradation_state,
+        )
+    except Exception as exc:
+        log.exception("Anomaly detection evaluation failed")
+        raise HTTPException(status_code=500, detail="Anomaly evaluation failed") from exc
+
 
 
 @app.post(

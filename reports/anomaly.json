@@ -1,0 +1,10 @@
+{
+  "total_test_engines": 100,
+  "onsets_detected_count": 92,
+  "onset_detection_rate": 0.92,
+  "false_alarm_rate_healthy_phase": 0.2672,
+  "median_lead_time_to_test_end_cycles": 99.5,
+  "median_lead_time_to_actual_failure_cycles": 164.5,
+  "fraction_detected_before_rul_80": 0.9891,
+  "methodology": "PCA (k=2) Reconstruction Error + IsolationForest -> Fused Health Index with CUSUM Tracking"
+}
