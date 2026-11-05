@@ -567,3 +567,198 @@ body::-webkit-scrollbar {
   }
 }
 
+/* ── Satellite Inspection Tooltip & Engineering Panel ───────────────── */
+.sat-tooltip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 100;
+  background: rgba(11, 17, 28, 0.9);
+  border: 1px solid var(--cy);
+  border-radius: 6px;
+  padding: 6px 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 12px rgba(61, 224, 255, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sat-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sat-tooltip-badge {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--cy);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sat-tooltip-name {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sat-info-panel {
+  position: fixed;
+  top: 90px;
+  right: 48px;
+  width: 400px;
+  max-width: 90vw;
+  background: rgba(11, 17, 28, 0.88);
+  border: 1px solid var(--border-cyan);
+  backdrop-filter: blur(16px);
+  border-radius: 14px;
+  padding: 24px;
+  z-index: 50;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--ink);
+}
+
+.sat-info-panel.visible {
+  display: flex;
+}
+
+.sat-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.sat-panel-sub {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--cy);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.sat-panel-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.sat-close-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--mut);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.sat-close-btn:hover {
+  color: var(--ink);
+  border-color: var(--cy);
+  background: rgba(61, 224, 255, 0.15);
+}
+
+.sat-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sat-section-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--mut);
+  letter-spacing: 0.08em;
+}
+
+.sat-section-text {
+  font-size: 0.85rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.sat-checklist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sat-checklist li {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--mut);
+  line-height: 1.4;
+  position: relative;
+  padding-left: 14px;
+}
+
+.sat-checklist li::before {
+  content: "•";
+  color: var(--cy);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.sat-panel-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.sat-action-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.05em;
+}
+
+.sat-action-btn.primary {
+  background: rgba(61, 224, 255, 0.15);
+  border: 1px solid var(--cy);
+  color: var(--cy);
+}
+
+.sat-action-btn.primary:hover {
+  background: var(--cy);
+  color: #05070b;
+}
+
+.sat-action-btn.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--mut);
+}
+
+.sat-action-btn.secondary:hover, .sat-action-btn.secondary.active {
+  border-color: var(--am);
+  color: var(--am);
+  background: rgba(255, 178, 61, 0.15);
+}
+

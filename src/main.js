@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initConductor();
   const world = initWorld();
   const figure = new FigureLayer();
-  const callouts = new CalloutSystem(world.engine, world.camera);
+  const callouts = new CalloutSystem(world.satellite || world.engine, world.camera);
   const scrubber = new StationScrubber();
   const headline = new ChapterHeadline();
   const charts = new DataChartsOverlay();

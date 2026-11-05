@@ -21,7 +21,7 @@ export class CalloutSystem {
     this.engine.assemblies.forEach((assy) => {
       const anchorEl = document.createElement('div');
       anchorEl.className = 'callout-anchor';
-      anchorEl.id = `callout-${assy.name.toLowerCase()}`;
+      anchorEl.id = `callout-${assy.id || assy.name.toLowerCase().replace(/\s+/g, '-')}`;
 
       // Center anchor dot
       const dot = document.createElement('div');
@@ -31,16 +31,22 @@ export class CalloutSystem {
       // Info box
       const box = document.createElement('div');
       box.className = 'callout-box';
+      box.style.width = '175px';
 
       const name = document.createElement('div');
       name.className = 'callout-name';
       name.textContent = assy.name;
       box.appendChild(name);
 
-      if (assy.isHPC) {
+      if (assy.category) {
+        const catBadge = document.createElement('span');
+        catBadge.className = 'callout-fault-badge';
+        catBadge.textContent = assy.category.toUpperCase();
+        box.appendChild(catBadge);
+      } else if (assy.isHPC) {
         const faultBadge = document.createElement('span');
         faultBadge.className = 'callout-fault-badge';
-        faultBadge.textContent = 'FD001 FAULT MODE';
+        faultBadge.textContent = 'TELEMETRY ACTIVE';
         box.appendChild(faultBadge);
       }
 
@@ -51,7 +57,7 @@ export class CalloutSystem {
 
       const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
       polyline.setAttribute('fill', 'none');
-      polyline.setAttribute('stroke', assy.isHPC ? '#ffb23d' : '#3de0ff');
+      polyline.setAttribute('stroke', '#3de0ff');
       polyline.setAttribute('stroke-width', '1.5');
       svgWave.appendChild(polyline);
       box.appendChild(svgWave);
@@ -115,8 +121,8 @@ export class CalloutSystem {
         anchorEl.classList.remove('active');
       } else {
         anchorEl.style.opacity = '1';
-        // Active if closest or if HPC in detect mode
-        const isActive = assy.name === closestAssy || (isDetect && assy.isHPC);
+        // Active if closest or highlighted in detect mode
+        const isActive = assy.name === closestAssy || (isDetect && (assy.id === 'hga' || assy.isHPC));
         if (isActive) {
           anchorEl.classList.add('active');
         } else {
@@ -128,7 +134,7 @@ export class CalloutSystem {
       const wave = this.waveformData.get(assy.name);
       if (wave) {
         wave.history.shift();
-        const baseNoise = (Math.random() - 0.5) * (assy.isHPC && isDetect ? 8 : 3);
+        const baseNoise = (Math.random() - 0.5) * ((assy.id === 'hga' || assy.isHPC) && isDetect ? 8 : 3.5);
         const nextVal = Math.max(2, Math.min(14, 8 + baseNoise));
         wave.history.push(nextVal);
 

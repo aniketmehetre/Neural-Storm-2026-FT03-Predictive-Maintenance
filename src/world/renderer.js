@@ -4,7 +4,8 @@
 import * as THREE from 'three';
 import { SkyDome } from './sky.js';
 import { CloudLayers } from './clouds.js';
-import { TurbofanEngine } from './engine.js';
+import { SatelliteDigitalTwin } from './satellite.js';
+import { SatelliteInteractionController } from './satellite_controls.js';
 import { CameraRig } from './rig.js';
 import { subscribe } from '../conductor.js';
 import { chapterAt } from '../ledger.js';
@@ -12,7 +13,8 @@ import { chapterAt } from '../ledger.js';
 export let scene = null;
 export let camera = null;
 export let renderer = null;
-export let engine = null;
+export let satellite = null;
+export let satelliteControls = null;
 export let cameraRig = null;
 export let skyDome = null;
 export let cloudLayers = null;
@@ -40,22 +42,28 @@ export function initWorld() {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
 
-  // Lighting
-  const ambLight = new THREE.AmbientLight(0xffffff, 0.65);
+  // Spacecraft illumination (Sun directional key, Earth albedo fill, Rim light)
+  const ambLight = new THREE.AmbientLight(0xffffff, 0.7);
   scene.add(ambLight);
 
-  const sunLight = new THREE.DirectionalLight(0xfff5ea, 1.8);
-  sunLight.position.set(12, 20, 15);
+  const sunLight = new THREE.DirectionalLight(0xfffaed, 2.2);
+  sunLight.position.set(16, 22, 18);
   scene.add(sunLight);
 
-  const rimLight = new THREE.DirectionalLight(0x3de0ff, 0.8);
-  rimLight.position.set(-15, -10, -10);
+  const earthAlbedo = new THREE.DirectionalLight(0x38bdf8, 0.85);
+  earthAlbedo.position.set(0, -15, 10);
+  scene.add(earthAlbedo);
+
+  const rimLight = new THREE.DirectionalLight(0x3de0ff, 0.9);
+  rimLight.position.set(-18, -8, -12);
   scene.add(rimLight);
 
   // Entities
   skyDome = new SkyDome(scene);
   cloudLayers = new CloudLayers(scene);
-  engine = new TurbofanEngine(scene);
+  satellite = new SatelliteDigitalTwin(scene);
+  satellite.assemblies = satellite.subsystems; // compatibility alias for callouts
+  satelliteControls = new SatelliteInteractionController(satellite, camera, renderer);
   cameraRig = new CameraRig(camera);
   clock = new THREE.Clock();
 
@@ -77,22 +85,25 @@ export function initWorld() {
     const time = clock.getElapsedTime();
     const ch = chapterAt(progress);
 
-    // 1. Rig
-    cameraRig.update(progress, time);
+    // 1. Camera Rig (only if user is not actively inspecting an individual subsystem)
+    if (!satelliteControls.selectedSubsystem) {
+      cameraRig.update(progress, time);
+    }
 
-    // 2. Sky
+    // 2. Sky & Atmosphere
     skyDome.update(ch.health, time);
-
-    // 3. Clouds
     cloudLayers.update(ch.health, time, progress);
 
-    // 4. Engine
-    engine.update(time, ch.explode, ch.heat, velocity);
+    // 3. Central 3D Satellite Digital Twin
+    satellite.update(time, ch.explode, ch.health, satelliteControls.isInspectionMode);
+
+    // 4. Interactive Controller (damping, raycasting, camera transitions)
+    satelliteControls.update();
 
     // 5. Render
     renderer.render(scene, camera);
   });
 
-  return { scene, camera, renderer, engine, cameraRig };
+  return { scene, camera, renderer, satellite, satelliteControls, cameraRig };
 }
 
